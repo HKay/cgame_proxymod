@@ -19,14 +19,10 @@
 	Note: mdd client proxymod contains large quantities from the quake III arena source code
 */
 #include "cg_local.h"
+#include "cg_utils.h"
+#include "cg_cvar.h"
 #include "cg_hud.h"
 #include "cg_draw.h"
-
-
-
-
-// DELME
-void draw_compass( void );
 
 
 
@@ -56,9 +52,6 @@ void CG_DrawAdjPic( float x, float y, float width, float height, qhandle_t hShad
 void CG_DrawPic( float x, float y, float width, float height, qhandle_t hShader ) {
 	g_syscall( CG_R_DRAWSTRETCHPIC, PASSFLOAT(x), PASSFLOAT(y), PASSFLOAT(width), PASSFLOAT(height), PASSFLOAT(0), PASSFLOAT(0), PASSFLOAT(1), PASSFLOAT(1), hShader );
 }
-
-
-
 
 
 
@@ -99,12 +92,6 @@ void convertAdjustedToNative ( float *xAdj, float *yAdj, float *wAdj, float *hAd
 		*hAdj = ((cgs.glconfig.vidHeight) / 480.0) * (*hAdj);
 
 	return;
-}
-
-
-
-void convertNativeToAdjusted ( float *x, float *y, float *w, float *h ) {
-	;// TODO: implement
 }
 
 
@@ -209,3 +196,29 @@ int8_t getColor( uint8_t color, float opacity, vec4_t c ) {
 
 	return qtrue;
 }
+
+
+
+/*
+==========
+==========
+*/
+void CG_AdjustFromFov( float pitch, float yaw, float *x, float *y ) {
+  float fov;
+  vec3_t deltaViewangles;
+
+//  fov = cvar_getFloat( "cg_fov", &fov );
+  fov = 130.0;
+
+  deltaViewangles[PITCH] = getPs( )->viewangles[PITCH] - pitch;
+  deltaViewangles[YAW]   = getPs( )->viewangles[YAW]   - yaw;
+	//g_syscall( CG_PRINT, vaf("^2fov %f^7\n", fov ));
+  // the fov covers 640 pixels. We now have to compute the right pixel distance depending on the fov.
+  //TODO: this formular is not correcting for the perspective
+  *x = 320 + ((640/fov) * deltaViewangles[YAW] );
+  *y = 240 - ((480/fov) * deltaViewangles[PITCH]);
+
+
+  return;
+}
+

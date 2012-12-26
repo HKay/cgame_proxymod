@@ -35,6 +35,13 @@
 #define PSF_USERINPUT_ATTACK   256
 #define PSF_USERINPUT_WALK     512
 
+
+// playerstate view angle indexes
+#define PITCH       0   // up / down
+#define YAW         1   // left / right
+#define ROLL        2   // fall over
+
+
 extern vec4_t    colorBlack;
 extern vec4_t    colorRed;
 extern vec4_t    colorGreen;

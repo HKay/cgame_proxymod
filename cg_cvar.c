@@ -29,22 +29,28 @@ vmCvar_t mdd_cgameproxy_version;
 vmCvar_t mdd_hud_draw;
 vmCvar_t mdd_hud_opacity;
 
+// ammo hud
 vmCvar_t mdd_hud_ammo_draw;
 vmCvar_t mdd_hud_ammo_offsetX;
 vmCvar_t mdd_hud_ammo_offsetY;
 vmCvar_t mdd_hud_ammo_size;
 vmCvar_t mdd_hud_ammo_textColor;
 
+// jump delay
 vmCvar_t mdd_hud_jumpDelay_draw;
 vmCvar_t mdd_hud_jumpDelay_offsetX;
 vmCvar_t mdd_hud_jumpDelay_offsetY;
 vmCvar_t mdd_hud_jumpDelay_width;
 vmCvar_t mdd_hud_jumpDelay_height;
 
+// jump delay
 vmCvar_t mdd_hud_jumpDelay_textOffsetX;
 vmCvar_t mdd_hud_jumpDelay_textOffsetY;
 vmCvar_t mdd_hud_jumpDelay_textSize;
 vmCvar_t mdd_hud_jumpDelay_textColor;
+
+// simple plasma hud
+vmCvar_t mdd_hud_plasma_draw;
 
 
 
@@ -67,7 +73,9 @@ static cvarTable_t cvarTable[] = {
 	{ &mdd_hud_jumpDelay_textOffsetX, "mdd_hud_jumpDelay_textOffsetX",  "320", CVAR_ARCHIVE },
 	{ &mdd_hud_jumpDelay_textOffsetY, "mdd_hud_jumpDelay_textOffsetY",  "220", CVAR_ARCHIVE },
 	{ &mdd_hud_jumpDelay_textSize,    "mdd_hud_jumpDelay_textSize",     "16",  CVAR_ARCHIVE },
-	{ &mdd_hud_jumpDelay_textColor,   "mdd_hud_jumpDelay_textColor",    "7",   CVAR_ARCHIVE }
+	{ &mdd_hud_jumpDelay_textColor,   "mdd_hud_jumpDelay_textColor",    "7",   CVAR_ARCHIVE },
+
+	{ &mdd_hud_plasma_draw,   "mdd_hud_plasma_draw", "0",   CVAR_ARCHIVE }
 };
 
 
@@ -80,6 +88,7 @@ int8_t cvar_register( char *name, char *value ) {
 
 int8_t cvar_getFloat( const char *var_name, float *value ) {
 	char buffer[1024];
+	vmCvar_t vmCvar;
 
 	g_syscall( CG_CVAR_VARIABLESTRINGBUFFER, var_name, buffer, 256 );
 	*value = atof( buffer ); // can't tell if 0 or ERROR

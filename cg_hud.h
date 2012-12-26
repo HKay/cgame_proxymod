@@ -51,6 +51,12 @@ typedef struct {
 } hud_ammo_t;
 
 
+typedef struct {
+	float xPos;
+	float yPos;
+} hud_plasma_t;
+
+
 
 typedef struct {
 	float xPos;
@@ -94,8 +100,9 @@ enum {
 
 void hud_setup( void );
 void hud_update( void );
-int8_t hud_baseSetup( hud_t *h );
+
 void hud_draw( void );
+int8_t hud_baseSetup( hud_t *h );
 int8_t hud_vBarSetup( hud_bar_t *bar, float xPosAdj, float yPosAdj, float widthAdj, float heightAdj );
 int8_t hud_vBarDraw( float percent, hud_bar_t *bar );
 int8_t hud_hBarDraw( float percent, hud_bar_t *bar );
@@ -106,6 +113,12 @@ int8_t hud_ammoDraw( hud_ammo_t *hud );
 int8_t hud_jumpDelaySetup( hud_jumpDelay_t *jumpHud );
 int8_t hud_jumpDelayControl( hud_jumpDelay_t *jumpHud );
 int8_t hud_jumpDelayDraw( hud_jumpDelay_t *jumpHud );
+
+int8_t hud_plasmaSetup( hud_plasma_t *hud );
+int8_t hud_plasmaDraw( hud_plasma_t *hud );
+int8_t hud_plasmaControl( hud_plasma_t *hud );
+
+
 
 // helper
 int8_t hud_boxDraw( float x, float y, float w, float h );
