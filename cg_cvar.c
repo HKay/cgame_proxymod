@@ -86,15 +86,11 @@ int8_t cvar_register( char *name, char *value ) {
 
 
 
-int8_t cvar_getFloat( const char *var_name, float *value ) {
+ void cvar_getFloat( const char *var_name, float *value ) {
 	char buffer[1024];
-	vmCvar_t vmCvar;
 
 	g_syscall( CG_CVAR_VARIABLESTRINGBUFFER, var_name, buffer, 256 );
-	*value = atof( buffer ); // can't tell if 0 or ERROR
-	// TODO: make this return qfalse in case of error -> no atof()
-
-	return qtrue;
+	*value = (float)atof( buffer ); // can't tell if 0 or ERROR
 }
 
 

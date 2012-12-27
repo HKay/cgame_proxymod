@@ -26,10 +26,16 @@
 
 
 
+
+
 int PASSFLOAT( float x ) {
-	float floatTemp;
-	floatTemp = x;
-	return *(int *)&floatTemp;
+	union {
+		float f;
+		int32_t i;
+	} u;
+
+	u.f = x;
+	return u.i;
 }
 
 
@@ -207,12 +213,10 @@ void CG_AdjustFromFov( float pitch, float yaw, float *x, float *y ) {
   float fov;
   vec3_t deltaViewangles;
 
-//  fov = cvar_getFloat( "cg_fov", &fov );
-  fov = 130.0;
+	cvar_getFloat( "cg_fov", &fov );
 
   deltaViewangles[PITCH] = getPs( )->viewangles[PITCH] - pitch;
   deltaViewangles[YAW]   = getPs( )->viewangles[YAW]   - yaw;
-	//g_syscall( CG_PRINT, vaf("^2fov %f^7\n", fov ));
   // the fov covers 640 pixels. We now have to compute the right pixel distance depending on the fov.
   //TODO: this formular is not correcting for the perspective
   *x = 320 + ((640/fov) * deltaViewangles[YAW] );
