@@ -18,6 +18,7 @@ CC=gcc
 BASE_CFLAGS=-pipe -Wall -pedantic
 
 BROOT=linux
+DEFRAG=~/Games/quake3/defrag
 BR=$(BROOT)/release
 BD=$(BROOT)/debug
 
@@ -65,7 +66,8 @@ banner:
 clean:
 	@rm -rf $(BROOT)
 
-
+install:
+	mv $(BR)/cgamei386.so $(DEFRAG)
 
 
 # -------------------------------------------------------------------------------------------------------------

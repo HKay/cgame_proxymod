@@ -47,7 +47,7 @@
 #define GAME             "Q3A"
 
 //<mayor>.<compat>.<minor>.<build>
-#define VERSION "0.0.1.0"
+#define VERSION "0.0.1.1"
 
 
 

@@ -67,7 +67,7 @@ typedef struct {
 	float width;
 	float height;
 
-	uint32_t mode;
+	uint32_t mode; // bitfield
 
 	// timestamps for computation
 	uint32_t t_jumpPreGround;
