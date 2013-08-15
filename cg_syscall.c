@@ -80,7 +80,8 @@ int32_t QDECL VM_SysCalls(byte *memoryBase, int32_t cmd, int32_t *args) {
 		return 0;
 
 	case CG_CVAR_REGISTER: // void  trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value, int32_t flags )
-		g_syscall( cmd, ptr(0), ptr(1), ptr(2), arg(3) );
+		// NO MORE CVAR_CHEAT for defrag!
+		g_syscall( cmd, ptr(0), ptr(1), ptr(2), arg(3)&(~0x200) );
 		return 0;
 
 	case CG_CVAR_UPDATE: // void  trap_Cvar_Update( vmCvar_t *cvar )
