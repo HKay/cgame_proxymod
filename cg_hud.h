@@ -22,7 +22,6 @@
 #define __CG_HUD_H__
 
 
-
 typedef struct {
 	vec4_t color;
 } hud_t;
@@ -58,6 +57,16 @@ typedef struct {
 
 
 
+#define NADE_DELAY 2500
+typedef struct {
+	vec4_t color;
+	float height;
+	uint32_t t_nadefired;
+	uint16_t cvarChangeCount;
+} hud_nadeTimer_t;
+
+
+
 typedef struct {
 	float xPos;
 	float yPos;
@@ -67,7 +76,10 @@ typedef struct {
 	float width;
 	float height;
 
-	uint32_t mode; // bitfield
+	uint32_t mode;
+	// bit 0: text output
+	// bit 1: graphical output
+	// bit 2: graphical history
 
 	// timestamps for computation
 	uint32_t t_jumpPreGround;
@@ -118,6 +130,9 @@ int8_t hud_plasmaSetup( hud_plasma_t *hud );
 int8_t hud_plasmaDraw( hud_plasma_t *hud );
 int8_t hud_plasmaControl( hud_plasma_t *hud );
 
+int8_t hud_nadeTimerSetup( hud_nadeTimer_t *hud );
+int8_t hud_nadeTimerControl( hud_nadeTimer_t *hud );
+int8_t hud_nadeTimerDraw( hud_nadeTimer_t *hud );
 
 
 // helper

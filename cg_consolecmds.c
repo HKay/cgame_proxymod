@@ -23,8 +23,28 @@
 #include "cg_consolecmds.h"
 
 
-// STUB
+
 qboolean *CG_ConsoleCommand( void ) {
+	int32_t argc;
+	int i;
+	char tmpArg[1024];
+	char args[1024];
+
+	memset( tmpArg, '\0', sizeof(tmpArg));
+	memset( args, '\0', sizeof(args));
+
+	argc = g_syscall( CG_ARGC );
+
+	g_syscall( CG_ARGV, 0, tmpArg, sizeof(tmpArg) );
+	strncat(args, vaf("%s ^1", tmpArg), sizeof(args));
+
+	for( i=1; i<argc; i++ ) {
+		g_syscall( CG_ARGV, i, tmpArg, sizeof(tmpArg) );
+		strncat(args, vaf("%s ", tmpArg), sizeof(args));
+//		strncpy(args, tmpArg, sizeof(args));
+	}
+
+	// g_syscall( CG_PRINT, vaf("^4>>>^7 %s\n", args));
 //  char cmdBuffer[256];
 //	uint32_t argc;
 

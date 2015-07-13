@@ -30,22 +30,28 @@ static hud_t hud;
 static hud_ammo_t ammo;
 static hud_jumpDelay_t jump;
 static hud_plasma_t plasma;
-
+static hud_nadeTimer_t nadeTimer;
+static uint8_t reInit_hud = qfalse;
 
 void hud_setup( void ) {
+	hud->cvarChangeCount = cvar_getModificationCount( "mdd_hud_nadeTimer_height" );
+	hud->cvarChangeCount += cvar_getModificationCount( "mdd_hud_nadeTimer_color" );
+
 	hud_baseSetup( &hud );
 	hud_ammoSetup( &ammo );
 	hud_jumpDelaySetup( &jump );
+	hud_nadeTimerSetup( &nadeTimer );
+
 //	hud_plasmaSetup( &plasma );
 }
 
 
 
-void hud_update( void ) {
-	// TODO: instead of just calling setup
-	// TODO: we check which structs require an update
-	hud_setup( );
-	//hud_jumpDelaySetup( &jump );
+void hud_update( void ) { // TODO: should be named "hud_frame"
+		// TODO: instead of just calling setup
+		// TODO: we check which structs require an update
+		hud_setup( );
+	}
 }
 
 
@@ -66,7 +72,7 @@ int8_t hud_baseSetup( hud_t *h ) {
 
 
 void hud_draw( void ) {
-	float hud_draw, hud_ammo_draw, hud_jumpDelay_draw, hud_plasma_draw;
+	float hud_draw, hud_ammo_draw, hud_jumpDelay_draw, hud_plasma_draw, hud_nadeTimer_draw;
 
 	cvar_getFloat( "mdd_hud_draw", &hud_draw );
 	if( !hud_draw )
@@ -75,6 +81,7 @@ void hud_draw( void ) {
 	cvar_getFloat( "mdd_hud_ammo_draw", &hud_ammo_draw );
 	cvar_getFloat( "mdd_hud_jumpDelay_draw", &hud_jumpDelay_draw );
 	cvar_getFloat( "mdd_hud_plasma_draw", &hud_plasma_draw );
+	cvar_getFloat( "mdd_hud_nadeTimer_draw", &hud_nadeTimer_draw );
 
 	if( hud_ammo_draw )
 		hud_ammoDraw( &ammo );
@@ -87,6 +94,11 @@ void hud_draw( void ) {
 	if( hud_plasma_draw ) {
 		hud_plasmaControl( &plasma );
 		hud_plasmaDraw( &plasma );
+	}
+
+	if( hud_nadeTimer_draw ) {
+		hud_nadeTimerControl( &nadeTimer );
+		hud_nadeTimerDraw( &nadeTimer );
 	}
 
 	// make sure the last color doesn't leak into defrag's UI
@@ -125,6 +137,48 @@ int8_t hud_plasmaControl( hud_plasma_t *hud ) {
 
 	CG_AdjustFromFov( pitch, yaw, &(hud->xPos), &(hud->yPos) );
 
+	return qtrue;
+}
+
+/*
+ *
+ * Nade timer
+ *
+ */
+int8_t hud_nadeTimerSetup( hud_nadeTimer_t *hud ) {
+	cvar_getFloat( "mdd_hud_nadeTimer_height", &hud->height );
+	cvar_getFloat( "mdd_hud_nadeTimer_color", &hud->color );
+	hud->t_nadefired = 0;
+
+
+	return qtrue;
+}
+
+
+
+int8_t hud_nadeTimerControl( hud_nadeTimer_t *hud ) {
+	playerState_t *ps;
+	ps = getPs( );
+
+
+	// check for a grenade that was spawend by us
+	if( !hud->t_nadefired ) { // TODO IMPLEMENT
+		hud->t_nadefired = getSnap( )->serverTime; // mark time the nade appeared
+	}
+	return qtrue;
+}
+
+int8_t hud_nadeTimerDraw( hud_nadeTimer_t *hud ) {
+	float height;
+	float color;
+	uint32_t now;
+
+	now = getSnap( )->serverTime;
+
+	g_syscall( CG_R_SETCOLOR, hud->color );
+	if( (hud->t_nadefired + NADE_DELAY > now) && hud->t_nadefired ) {
+		CG_DrawAdjPic( 320, 240, 1, hud->height, cgs.media.gfxWhiteShader );
+	}
 	return qtrue;
 }
 
@@ -230,7 +284,7 @@ int8_t hud_jumpDelaySetup( hud_jumpDelay_t *jumpHud ) {
 
 	convertAdjustedToNative( &xPos, &yPos, &textPosX, &textPosY );
 
-	jumpHud->mode = draw; // 0=off, 1=text, 2=graph, 3=text and graph
+	jumpHud->mode = draw; // bitfield
 
 	jumpHud->xPos = xPos;
 	jumpHud->yPos = yPos;

@@ -52,6 +52,11 @@ vmCvar_t mdd_hud_jumpDelay_textColor;
 // simple plasma hud
 vmCvar_t mdd_hud_plasma_draw;
 
+// nade timer hud
+vmCvar_t mdd_hud_nadeTimer_draw;
+vmCvar_t mdd_hud_nadeTimer_offsetY;
+vmCvar_t mdd_hud_nadeTimer_height;
+vmCvar_t mdd_hud_nadeTimer_color;
 
 
 static cvarTable_t cvarTable[] = {
@@ -75,8 +80,32 @@ static cvarTable_t cvarTable[] = {
 	{ &mdd_hud_jumpDelay_textSize,    "mdd_hud_jumpDelay_textSize",     "16",  CVAR_ARCHIVE },
 	{ &mdd_hud_jumpDelay_textColor,   "mdd_hud_jumpDelay_textColor",    "7",   CVAR_ARCHIVE },
 
-	{ &mdd_hud_plasma_draw,   "mdd_hud_plasma_draw", "0",   CVAR_ARCHIVE }
+	{ &mdd_hud_plasma_draw,   "mdd_hud_plasma_draw", "0",   CVAR_ARCHIVE },
+
+	{ &mdd_hud_nadeTimer_draw,    "mdd_hud_nadeTimer_draw",    "0",  CVAR_ARCHIVE },
+	{ &mdd_hud_nadeTimer_offsetY, "mdd_hud_nadeTimer_offsetY", "0",  CVAR_ARCHIVE },
+	{ &mdd_hud_nadeTimer_height,  "mdd_hud_nadeTimer_height",  "16", CVAR_ARCHIVE },
+	{ &mdd_hud_nadeTimer_color,   "mdd_hud_nadeTimer_color",   "7",  CVAR_ARCHIVE }
+
+
 };
+
+
+
+vmCvar_t* cvar_getForName( const char *var_name ) {
+	int i=0;
+	cvarTable_t *cv;
+	uint32_t cvarTableSize;
+
+	cvarTableSize = ARRAY_LEN( cvarTable );
+
+	cv = cvarTable;
+	for ( i=0; i < cvarTableSize; i++, cv++ ) {
+		if(!strncmp( cv->cvarName, var_name, strlen(cv->cvarName)) ) { // TODO: FIX BUFFEROVERFLOW
+			return cv;
+		}
+	}
+}
 
 
 
@@ -93,6 +122,18 @@ int8_t cvar_register( char *name, char *value ) {
 	*value = (float)atof( buffer ); // can't tell if 0 or ERROR
 }
 
+
+
+
+int32_t cvar_getModificationCount ( const char *var_name ) {
+	vmCvar_t *tmp = NULL;
+	tmp = cvar_getForName( var_name );
+	if( tmp ) {
+		return tmp->modificationCount;
+	}
+
+	return 0;
+}
 
 
 int8_t init_cvars( void ) {

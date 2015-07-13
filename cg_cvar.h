@@ -71,6 +71,7 @@ typedef struct {
 
 
 void cvar_getFloat( const char *var_name, float *value );
+int32_t cvar_getModificationCount ( const char *var_name );
 int8_t init_cvars( void );
 
 
